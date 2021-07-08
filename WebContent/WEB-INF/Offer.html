@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Offer Page</title>
+</head>
+	<body>
+		<h1><span th:text="$username">Doe</span> <span th:text="$auction.name">Product 1</span> Offer Page</h1>
+		<p th:text="$auction.details">Auction 1</p>
+		<table>
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Price</th>
+						<th>Date</th>
+					</tr>
+				</thead>
+				<tbody th:remove="all-but-first">
+					<tr th:each="bid : ${bids}">
+						<td>
+							<span th:text="${bid.username}">User 1</span>
+						</td>
+						<td>
+							<span th:text="${bid.amount + '&euro;'}">100&euro;</span>
+						</td>
+						<td>
+							<span th:text="${auction.date}">24/12/2021 12:04</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<form th:action="@{/MakeBid}" method="POST">
+				<input type="hidden" name="auctionID" th:value="${auction.id}">
+				<input type="number" th:attr="min=${auction.maxPrice}">
+				<button type="submit" name="action" value="Offer">Make Offer</button>
+			</form>
+	</body>
+</html>

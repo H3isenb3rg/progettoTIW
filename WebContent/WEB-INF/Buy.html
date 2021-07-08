@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Buy Page</title>
+</head>
+	<body>
+		<h1><span th:text="$username">Doe</span> Buy Page</h1>
+		<form th:action="@{/SearchAuction}" method="POST">
+			<input type="text" name="keyword" placeholder="Search product" required>
+			<button type="submit" name="action" value="Search">Search</button>
+		</form>
+		<ul th:if="${not #lists.isEmpty(auctions)}" th:remove="all-but-first">
+			<li th:each="auction : ${auctions}">
+				<a th:href="@{/GetOfferDetails(auctionID=${auction.id})}">
+					<span th:text="${auction.name}">Product 1</span>
+				</a>
+			</li>
+		</ul>
+	</body>
+</html>

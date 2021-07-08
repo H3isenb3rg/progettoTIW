@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Auction Details</title>
+</head>
+	<body>
+		<h1><span th:text="$username">Doe</span> <span th:text="$auction.name">Product 1</span> Auction Details</h1>
+		<p th:text="$auction.details">Auction 1</p>
+		<div th:if="${auction.isOpen}">
+			<table>
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Price</th>
+						<th>Date</th>
+					</tr>
+				</thead>
+				<tbody th:remove="all-but-first">
+					<tr th:each="bid : ${bids}">
+						<td>
+							<span th:text="${bid.username}">User 1</span>
+						</td>
+						<td>
+							<span th:text="${bid.amount + '&euro;'}">100&euro;</span>
+						</td>
+						<td>
+							<span th:text="${auction.date}">24/12/2021 12:04</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<form th:action="@{/CloseAuction}" method="POST">
+				<input type="hidden" name="auctionID" th:value="${auction.id}">
+				<button type="submit" name="action" value="Close">Close Auction</button>
+			</form>
+		</div>
+		<div th:if="${not auction.isOpen}">
+			<p th:text="${bid.winner}">User 4</p>
+			<p th:text="${bid.price + '&euro;'}">100&euro;</p>
+			<p th:text="${bid.shippingAddr}">piazza Duomo 2, Milano</p>
+		</div>
+	</body>
+</html>
