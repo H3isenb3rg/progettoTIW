@@ -17,9 +17,9 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-import it.polimi.tiw.projects.beans.User;
-import it.polimi.tiw.projects.dao.UserDAO;
-import it.polimi.tiw.projects.utils.ConnectionHandler;
+import it.polimi.tiw.auctions.beans.User;
+import it.polimi.tiw.auctions.dao.UserDAO;
+import it.polimi.tiw.auctions.utils.ConnectionHandler;
 
 @WebServlet("/Login")
 public class Login extends HttpServlet {
@@ -42,13 +42,12 @@ public class Login extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// obtain and escape params
-		String usrn = null;
-		String pwd = null;
+		String username = null;
+		String password = null;
 		try {
-			usrn = StringEscapeUtils.escapeJava(request.getParameter("username"));
-			pwd = StringEscapeUtils.escapeJava(request.getParameter("pwd"));
-			if (usrn == null || pwd == null || usrn.isEmpty() || pwd.isEmpty()) {
+			username = StringEscapeUtils.escapeJava(request.getParameter("username"));
+			password = StringEscapeUtils.escapeJava(request.getParameter("password"));
+			if (username == null || password == null || username.isEmpty() || password.isEmpty()) {
 				throw new Exception("Missing or empty credential value");
 			}
 
@@ -58,13 +57,13 @@ public class Login extends HttpServlet {
 			return;
 		}
 
-		// query db to authenticate for user
+		// authenticate user
 		UserDAO userDao = new UserDAO(connection);
 		User user = null;
 		try {
-			user = userDao.checkCredentials(usrn, pwd);
+			user = userDao.checkCredentials(username, password);
 		} catch (SQLException e) {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not Possible to check credentials");
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while checking credentials");
 			return;
 		}
 
@@ -75,8 +74,8 @@ public class Login extends HttpServlet {
 		if (user == null) {
 			ServletContext servletContext = getServletContext();
 			final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-			ctx.setVariable("errorMsg", "Incorrect username or password");
-			path = "/index.html";
+			ctx.setVariable("errorMsg", "Incorrect username or password! Retry");
+			path = "/login.html";
 			templateEngine.process(path, ctx, response.getWriter());
 		} else {
 			request.getSession().setAttribute("user", user);
