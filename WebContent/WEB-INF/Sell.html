@@ -3,37 +3,69 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Sell</title>
+		<link rel="stylesheet" type="text/css" media="all" href="style.css" />
 </head>
 	<body>
-		<h1><span th:text="$username">Doe</span> Sell Page</h1>
+		<h1><span th:text="${username}">Doe</span> Sell Page</h1>
+		<div class="navbar">
+			<ul>
+				<li><a th:href="@{/Buy}">Buy Page</a></li>
+				<li><a th:href="@{/Sell}">Sell Page</a></li>
+			</ul>
+		</div>
 		<div class="allAuctions">
 			<div class="openAuctions">
-				<table>
+				<h3>Open Auctions</h3>
+				<table border="1">
 					<thead>
-						<tr><th>Open Auctions</th></tr>
+						<tr>
+							<th>Product Name</th>
+							<th>Product Description</th>
+							<th>Remaining Time</th>
+						</tr>
 					</thead>
 					<tbody th:remove="all-but-first">
 						<tr th:each="auction : ${openAuctions}">
 							<td>
-								<a th:href="@{/GetAuctionDetails(auctionID=${auction.id})}">
-									<span th:text="${auction.name}">Product 1</span>
+								<a th:href="@{/AuctionDetails(auctionID=${auction.auctionId})}">
+									<span th:text="${auction.productName}">Product 1</span>
 								</a>
+							</td>
+							<td>
+								<span th:text="${auction.description}">Product 1 Desc</span>
+							</td>
+							<td>
+								<p>Days: <span th:text="${auction.timeDiff / 24}">Product 1 Remaining time</span> Hours: <span th:text="${auction.timeDiff % 24}">Product 1 Remaining time</span></p>
 							</td>
 						</tr>
 					</tbody>
 				</table>
 			</div>
 			<div class="closedAuctions">
-				<table>
+				<h3>Closed Auctions</h3>
+				<div th:if="${#lists.isEmpty(closedAuctions)}">
+					<p>You have no closed auctions</p>
+				</div>
+				<table border="1" th:if="${not #lists.isEmpty(closedAuctions)}">
 					<thead>
-						<tr><th>Closed Auctions</th></tr>
+						<tr>
+							<th>Product Name</th>
+							<th>Product Description</th>
+							<th>Ending Date</th>
+						</tr>
 					</thead>
 					<tbody th:remove="all-but-first">
 						<tr th:each="auction : ${closedAuctions}">
 							<td>
-								<a th:href="@{/GetAuctionDetails(auctionID=${auction.id})}">
-									<span th:text="${auction.name}">Product 2</span>
+								<a th:href="@{/AuctionDetails(auctionID=${auction.auctionId})}">
+									<span th:text="${auction.productName}">Product 1</span>
 								</a>
+							</td>
+							<td>
+								<span th:text="${auction.description}">Product 1 Desc</span>
+							</td>
+							<td>
+								<span th:text="${auction.endingDate}">Product 1 Remaining time</span>
 							</td>
 						</tr>
 					</tbody>
@@ -54,13 +86,13 @@
 						Image: <input type="image" name="productImage"/>
 					</p>
 					<p>
-						Starting Price: <input type="number" name="productStartingProce" min=1 required />
+						Starting Price: <input type="number" name="productStartingPrice" min=1 required />
 					</p>
 					<p>
 						Minimum Raise: <input type="number" name="productMinimumRaise" min=1 required />
 					</p>
 					<p>
-						Ending Date: <input type="date" name="endingDate" th:attr="min=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" placeholder="yyyy-mm-dd" required />
+						Ending Date: <input type="datetime-local" name="endingDate" th:attr="min=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" placeholder="yyyy-mm-dd" required />
 					</p>
 					<input type="submit" name="Create Auction">
 				</fieldset>

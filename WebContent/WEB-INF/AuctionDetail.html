@@ -1,44 +1,77 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
 <meta charset="ISO-8859-1">
 <title>Auction Details</title>
+		<link rel="stylesheet" type="text/css" media="all" href="style.css" />
 </head>
-	<body>
-		<h1><span th:text="$username">Doe</span> <span th:text="$auction.name">Product 1</span> Auction Details</h1>
-		<p th:text="$auction.details">Auction 1</p>
-		<div th:if="${auction.isOpen}">
-			<table>
-				<thead>
-					<tr>
-						<th>Name</th>
-						<th>Price</th>
-						<th>Date</th>
-					</tr>
-				</thead>
-				<tbody th:remove="all-but-first">
-					<tr th:each="bid : ${bids}">
-						<td>
-							<span th:text="${bid.username}">User 1</span>
-						</td>
-						<td>
-							<span th:text="${bid.amount + '&euro;'}">100&euro;</span>
-						</td>
-						<td>
-							<span th:text="${auction.date}">24/12/2021 12:04</span>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			<form th:action="@{/CloseAuction}" method="POST">
-				<input type="hidden" name="auctionID" th:value="${auction.id}">
-				<button type="submit" name="action" value="Close">Close Auction</button>
-			</form>
+<body>
+	<h1>
+		<span th:text="${username}">Doe</span> <span th:text="${auction.productName}">Product 1</span> Auction Details
+	</h1>
+	<div class="navbar">
+			<ul>
+				<li><a th:href="@{/Buy}">Buy Page</a></li>
+				<li><a th:href="@{/Sell}">Sell Page</a></li>
+			</ul>
 		</div>
-		<div th:if="${not auction.isOpen}">
-			<p th:text="${bid.winner}">User 4</p>
-			<p th:text="${bid.price + '&euro;'}">100&euro;</p>
-			<p th:text="${bid.shippingAddr}">piazza Duomo 2, Milano</p>
+	<table border="1">
+		<thead>
+			<tr>
+				<th>Product Name</th>
+				<th>Description</th>
+				<th>Remaining Time</th>
+				<th>Minimum Raise</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td><span th:text="${auction.productName}">Product 1</span></td>
+				<td><span th:text="${auction.description}">Product 1 description</span></td>
+				<td>Days: <span th:text="${auction.timeDiff / 24}">Product 1 Remaining time</span> Hours: <span th:text="${auction.timeDiff % 24}">Product 1 Remaining time</span> </td>
+				<td><span th:text="${auction.minIncrease}">Product 1 min increase</span> &euro;</td>
+			</tr>
+		</tbody>
+	</table>
+	<div th:unless="${auction.isClosed}">
+		<h2>Auction is open:</h2>
+		<form th:action="@{/CloseAuction}" method="POST">
+			<input type="hidden" name="auctionID" th:value="${auction.auctionId}">
+			<button type="submit" name="action" value="Close">Close
+				Auction</button>
+		</form>
+		<p th:text="${errorMessage}"></p>
+		<h3 class="bidsTitle">Bids</h3>
+		<div th:if="${#lists.isEmpty(openAuctions)}">
+			<p>You have no bids for this auction yet!</p>
 		</div>
-	</body>
+		<table border="1" th:if="${not #lists.isEmpty(bids)}">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Price</th>
+					<th>Date</th>
+				</tr>
+			</thead>
+			<tbody th:remove="all-but-first">
+				<tr th:each="bid : ${bids}">
+					<td><span th:text="${bid.bidder}">User 1</span></td>
+					<td><span th:text="${bid.offer}">100</span>&euro;</td>
+					<td><span th:text="${bid.date}">24/12/2021 12:04</span></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div th:if="${auction.isClosed}">
+		<h3>Auction is closed: </h3>
+		<div th:if="${receivedOffers}">
+			<p>Winner: <span th:text="${winner}">User 4</span></p>
+			<p>Final Price: <span th:text="${price}">100</span>&euro;</p>
+			<p>Shipping Address: <span th:text="${address}">piazza Duomo 2, Milano</span></p>
+		</div>
+		<div th:unless="${receivedOffers}">
+			<p>No Offers Received!</p>
+		</div>
+	</div>
+</body>
 </html>

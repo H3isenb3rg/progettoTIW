@@ -3,19 +3,73 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Buy Page</title>
+		<link rel="stylesheet" type="text/css" media="all" href="style.css" />
 </head>
 	<body>
 		<h1><span th:text="${username}">Doe</span> Buy Page</h1>
-		<form th:action="@{/SearchAuction}" method="POST">
-			<input type="text" name="keyword" placeholder="Search product" required>
-			<button type="submit" name="action" value="Search">Search</button>
-		</form>
-		<ul th:if="${not #lists.isEmpty(auctions)}" th:remove="all-but-first">
-			<li th:each="auction : ${auctions}">
-				<a th:href="@{/GetOfferDetails(auctionID=${auction.id})}">
-					<span th:text="${auction.name}">Product 1</span>
-				</a>
-			</li>
-		</ul>
+		<div class="navbar">
+			<ul>
+				<li><a th:href="@{/Buy}">Buy Page</a></li>
+				<li><a th:href="@{/Sell}">Sell Page</a></li>
+			</ul>
+		</div>
+		<div class="searchSection">
+			<form class="searchBox" th:action="@{/SearchAuction}" method="POST">
+				<input type="text" name="keyword" placeholder="Search product"
+					required>
+				<button type="submit" name="action" value="Search">Search</button>
+			</form>
+			<div th:if="${search}">
+				<div th:if="${#lists.isEmpty(openAuctions)}">
+					<p>No auctions found with that keyword!</p>
+				</div>
+				<table border="1" th:if="${not #lists.isEmpty(openAuctions)}">
+					<thead>
+					<tr>
+						<th>Product Name</th>
+						<th>Description</th>
+						<th>Remaining Time</th>
+					</tr>
+					</thead>
+					<tbody th:remove="all-but-first">
+					<tr th:each="auction : ${openAuctions}">
+						<td><a
+								th:href="@{/Offer(auctionID=${auction.auctionId})}"> <span
+								th:text="${auction.productName}">Product 1</span>
+						</a></td>
+						<td><span th:text="${auction.description}">Product 1
+								description</span></td>
+						<td>
+							Days: <span th:text="${auction.timeDiff / 24}">Product 1 Remaining time</span> Hours: <span th:text="${auction.timeDiff % 24}">Product 1 Remaining time</span>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div>
+			<table th:if="${not #lists.isEmpty(wonAuctions)}">
+				<thead>
+					<tr>
+						<th>Product Name</th>
+						<th>Description</th>
+						<th>Final Price</th>
+					</tr>
+				</thead>
+				<tbody th:remove="all-but-first">
+					<tr th:each="auction : ${wonAuctions}">
+						<td>
+							<span th:text="${auction.productName}">Product 1</span>
+						</td>
+						<td>
+							<span th:text="${auction.description}">Product 1 description</span>
+						</td>
+						<td>
+							<span th:text="${auction.winner}">Time left</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 	</body>
 </html>

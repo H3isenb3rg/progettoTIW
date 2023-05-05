@@ -19,6 +19,22 @@ http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
 		<param-name>dbDriver</param-name>
 		<param-value>com.mysql.cj.jdbc.Driver</param-value>
 	</context-param>
+	<filter> 
+      <filter-name>LoginCheck</filter-name>
+      <filter-class>it.polimi.tiw.auctions.filters.LoginCheck</filter-class> 
+ 	</filter> 
+ 	<filter-mapping> 
+	    <filter-name>LoginCheck</filter-name>
+	    <url-pattern>/Home</url-pattern> 
+	    <url-pattern>/Buy</url-pattern> 
+	    <url-pattern>/Sell</url-pattern> 
+	    <url-pattern>/CreateAuction</url-pattern> 
+	    <url-pattern>/SearchAuction</url-pattern>
+	    <url-pattern>/Offer</url-pattern>
+	    <url-pattern>/MakeBid</url-pattern>
+	    <url-pattern>/AuctionDetails</url-pattern>
+	    <url-pattern>/CloseAuction</url-pattern>
+ 	</filter-mapping> 
 	<welcome-file-list>
 		<welcome-file>login.html</welcome-file>
 	</welcome-file-list>

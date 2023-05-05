@@ -3,10 +3,16 @@
 	<head>
 		<meta charset="ISO-8859-1">
 		<title>Home Page</title>
+		<link rel="stylesheet" type="text/css" media="all" href="style.css" />
 	</head>
 	<body>
 		<h1><span th:text="${username}">Doe</span> Home Page</h1>
-		<p><a href="Buy.html">Buy Page</a></p>
-		<p><a href="Sell.html">Sell Page</a></p>
+		<div class="navbar">
+			<ul>
+				<li><a th:href="@{/Buy}">Buy Page</a></li>
+				<li><a th:href="@{/Sell}">Sell Page</a></li>
+			</ul>
+		</div>
+		
 	</body>
 </html>
